@@ -14,6 +14,8 @@ NETCDF_FLIB=/usr/lib/x86_64-linux-gnu
 INC_NC  = -I${NETCDF_CINC} -I${NETCDF_FINC}
 LIB_NC  = -L${NETCDF_FLIB} -lnetcdff -L${NETCDF_CLIB} -lnetcdf 
 
+LIB = ~/.local/lib
+INC = ~/.local/inc
 
 objdir = .obj
 libname = libncio.a
