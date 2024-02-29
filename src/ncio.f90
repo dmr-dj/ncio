@@ -943,23 +943,23 @@ contains
 
         end if
 
-        ! ! Always update the actual range (whether new or not) if it exists
-        if (v%actual_range(1) .ne. 0.d0 .and. v%actual_range(2) .ne. 0.d0) then
-            select case(trim(v%xtype))
-                case("NF90_INT")
-                    call nc_check( nf90_put_att(ncid, v%varid, "actual_range", int(v%actual_range)) )
-                case("NF90_FLOAT")
-                    call nc_check( nf90_put_att(ncid, v%varid, "actual_range", real(v%actual_range)) )
-                case("NF90_DOUBLE")
-                    call nc_check( nf90_put_att(ncid, v%varid, "actual_range", v%actual_range) )
-                case("NF90_CHAR")
-                    v%actual_range = (/ 0.d0, 0.d0 /)
-                case DEFAULT
-                    write(*,*) "nc_put_att:: Error, wrong xtype defined:"//trim(v%xtype)
-                    write(0,*) "stopped by ncio."
-                    stop 9
-            end select
-        end if
+       ! ! ! Always update the actual range (whether new or not) if it exists
+       ! if (v%actual_range(1) .ne. 0.d0 .and. v%actual_range(2) .ne. 0.d0) then
+       !     select case(trim(v%xtype))
+       !         case("NF90_INT")
+       !             call nc_check( nf90_put_att(ncid, v%varid, "actual_range", int(v%actual_range)) )
+       !         case("NF90_FLOAT")
+       !             call nc_check( nf90_put_att(ncid, v%varid, "actual_range", real(v%actual_range)) )
+       !         case("NF90_DOUBLE")
+       !             call nc_check( nf90_put_att(ncid, v%varid, "actual_range", v%actual_range) )
+       !         case("NF90_CHAR")
+       !             v%actual_range = (/ 0.d0, 0.d0 /)
+       !         case DEFAULT
+       !             write(*,*) "nc_put_att:: Error, wrong xtype defined:"//trim(v%xtype)
+       !             write(0,*) "stopped by ncio."
+       !             stop 9
+       !     end select
+       ! end if
 
         return
 
@@ -1570,7 +1570,7 @@ contains
                     ! Pass - no grid mapping needed for a latitude_longitude grid
                     
                     ! Add grid mapping attributes 
-                    !call nc_check( nf90_put_att(nc_id,varid, "grid_mapping_name", "latitude_longitude") )
+                    call nc_check( nf90_put_att(nc_id,varid, "grid_mapping_name", "latitude_longitude") )
                     ! == No additional parameters needed == 
 
                 case DEFAULT
@@ -1885,10 +1885,6 @@ contains
         allocate(v%dim(v%n))
         v%dim = x
 
-        ! Allocate dimension names to length=1 (dimension variable has one dimension)
-        if (allocated(v%dims)) deallocate(v%dims)
-        allocate(v%dims(1))
-        
         ! Get the range from the x values
         v%actual_range = (/ minval(v%dim), maxval(v%dim) /)
         v%add_offset   = 0.d0

@@ -5,10 +5,14 @@
 
 FC = gfortran
 
-NC_CROOT=/usr/local/Cellar/netcdf/4.9.2_1
-NC_FROOT=/usr/local/Cellar/netcdf-fortran/4.6.1
-INC_NC  = -I${NC_FROOT}/include
-LIB_NC  = -L${NC_FROOT}/lib -lnetcdff -L${NC_CROOT}/lib -lnetcdf 
+NETCDF_CINC=/usr/include
+NETCDF_FINC=/usr/include
+
+NETCDF_CLIB=/usr/lib/x86_64-linux-gnu
+NETCDF_FLIB=/usr/lib/x86_64-linux-gnu
+
+INC_NC  = -I${NETCDF_CINC} -I${NETCDF_FINC}
+LIB_NC  = -L${NETCDF_FLIB} -lnetcdff -L${NETCDF_CLIB} -lnetcdf 
 
 
 objdir = .obj
