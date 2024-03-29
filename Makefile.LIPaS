@@ -1,27 +1,19 @@
 .SUFFIXES: .f .F .F90 .f90 .o .mod
 .SHELL: /bin/sh
 
-## GFORTRAN OPTIONS (default) ##
 
-FC = gfortran
+FC = @FORTRAN_COMPILER_PATH@
+FLAGS = @INCNETCDF@
+LFLAGS= @LIBNETCDF@
+DFLAGS= @F_OPTIM_HIGH@
 
-NC_CROOT=/usr/lib/x86_64-linux-gnu
-NC_FROOT=/usr/lib/x86_64-linux-gnu
-NC_FINC=/usr/include
-INC_NC  = -I${NC_FINC}
-LIB_NC  = -L${NC_FROOT}/lib -lnetcdff -L${NC_CROOT}/lib -lnetcdf 
-
-NETCDF_CLIB=/usr/lib/x86_64-linux-gnu
-NETCDF_FLIB=/usr/lib/x86_64-linux-gnu
-
-INC_NC  = -I${NETCDF_CINC} -I${NETCDF_FINC}
-LIB_NC  = -L${NETCDF_FLIB} -lnetcdff -L${NETCDF_CLIB} -lnetcdf 
-
-LIB = ~/.local/lib
-INC = ~/.local/inc
-
-objdir = .obj
+objdir = .
 libname = libncio.a
+prefix = @INSTALL_PREFIX@
+
+libdir = ${prefix}/lib
+incdir = ${prefix}/inc
+
 
 .PHONY : usage
 usage:
@@ -35,33 +27,6 @@ usage:
 	@echo " make clean      : cleans object and executable files"
 	@echo ""
 
-# Command-line options at make call
-ifort ?= 0
-debug ?= 0 
-
-FLAGS  = -I$(objdir) -J$(objdir) $(INC_NC)
-LFLAGS = $(LIB_NC)
-
-DFLAGS = -O3
-ifeq ($(debug), 1)
-    DFLAGS   = -w -g -p -ggdb -ffpe-trap=invalid,zero,overflow,underflow -fbacktrace -fcheck=all
-endif
-
-ifeq ($(ifort),1) 
-	## IFORT OPTIONS ##
-    FC = ifort 
-    LIB = /home/robinson/apps/netcdf/netcdf/lib
-    INC = /home/robinson/apps/netcdf/netcdf/include
-
-	FLAGS        = -module $(objdir) -L$(objdir) -I$(INC)
-	LFLAGS		 = -L$(LIB) -lnetcdf
-
-	DFLAGS   = -O3
-	ifeq ($(debug), 1)
-	    DFLAGS   =-C -traceback -ftrapuv -fpe0 -check all
-	    # -w 
-	endif
-endif
 
 ## Individual libraries or modules ##
 $(objdir)/ncio.o: src/ncio.f90
@@ -82,8 +47,8 @@ $(objdir)/$(libname): $(objdir)/ncio.o $(objdir)/ncio_transpose.o
 	ranlib $@
 
 install: $(objdir)/$(libname)
-	@cp -v $^ $(LIB)
-	@cp -v $(objdir)/ncio.mod $(INC)
+	@cp -v $^ $(libdir)
+	@cp -v $(objdir)/ncio.mod $(incdir)
 
 ## Complete programs
 
