@@ -43,7 +43,7 @@ $(objdir)/ncio.so: src/ncio.f90 src/ncio_transpose.f90
 lib: $(objdir)/$(libname)
 
 $(objdir)/$(libname): $(objdir)/ncio.o $(objdir)/ncio_transpose.o
-	ar -r $@ $^
+	ar -rc $@ $^
 	ranlib $@
 
 install: $(objdir)/$(libname)
